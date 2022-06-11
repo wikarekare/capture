@@ -8,8 +8,17 @@ require 'wikk_configuration'
 
 load '/wikk/etc/wikk.conf'
 
-SITE_IP_QUERY = 'select INET_NTOA(dns_network.network + (dns_subnet.subnet * dns_network.subnet_size) + host_index) as ip, customer.site_name as site_name  from dns_subnet, dns_network, dns_host, customer, customer_dns_subnet where  customer.customer_id = customer_dns_subnet.customer_id and customer_dns_subnet.dns_subnet_id = dns_subnet.dns_subnet_id and dns_subnet.dns_subnet_id = dns_host.dns_subnet_id and dns_subnet.dns_network_id = dns_network.dns_network_id  and dns_host.host_index = 0 order by site_name'
-
+SITE_IP_QUERY = <<~SQL
+  select INET_NTOA(dns_network.network + (dns_subnet.subnet * dns_network.subnet_size) + host_index) AS ip,
+        customer.site_name AS site_name
+  FROM dns_subnet, dns_network, dns_host, customer, customer_dns_subnet
+  WHERE  customer.customer_id = customer_dns_subnet.customer_id
+  AND customer_dns_subnet.dns_subnet_id = dns_subnet.dns_subnet_id
+  AND dns_subnet.dns_subnet_id = dns_host.dns_subnet_id
+  AND dns_subnet.dns_network_id = dns_network.dns_network_id
+  AND dns_host.host_index = 0
+  ORDER BY site_name
+SQL
 # Write IP address, site_name pairs to YML file
 def dump_customer_networks
   File.open(CUSTOMER_NETWORKS, 'w+', 0o644) do |fd|
