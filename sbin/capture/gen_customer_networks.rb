@@ -9,7 +9,7 @@ require 'wikk_configuration'
 load '/wikk/etc/wikk.conf'
 
 SITE_IP_QUERY = <<~SQL
-  select INET_NTOA(dns_network.network + (dns_subnet.subnet * dns_network.subnet_size) + host_index) AS ip,
+  SELECT INET_NTOA(dns_network.network + (dns_subnet.subnet * dns_network.subnet_size) + host_index) AS ip,
         customer.site_name AS site_name
   FROM dns_subnet, dns_network, dns_host, customer, customer_dns_subnet
   WHERE  customer.customer_id = customer_dns_subnet.customer_id
