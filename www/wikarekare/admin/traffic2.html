@@ -1,0 +1,247 @@
+<html><head><title>Traffic by Tower</title>
+<script src="/rgraph/libraries/RGraph.common.core.js" ></script>
+<script src="/rgraph/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+<script src="/js/local.js"></script>
+
+<script>
+var current_tower = "";
+var working_img = new Image();
+var now ;
+var graph_type = ['graph3d'];
+var this_month = false;
+var graph_type_map = {
+  "pings_and_traffic": ['traffic_split', 'ping'],
+  "graph3d": ['graph3d']
+};
+
+  working_img.src = "/images/chain_waiting_image/chain.gif";
+
+function parse_args() {
+  var site_name = getURLParameters('site_name');
+  var host = getURLParameters('host');
+  if(host != null) { site_name = host; }
+  if( site_name != null ) {
+    var tower = document.getElementById("tower_list");
+    switch(site_name) {
+      case 'dist': tower.value = -2; tower_graph(-2); break;
+      case 'all':  tower.value = -3; tower_graph(-3); break
+      default:
+        var t = find_tower_by_site_name(site_name);
+        if(t != null) {
+          tower.value = t;
+          window.current_tower = site_name;
+          fetch_ping_data(false);
+        }
+    }
+  }
+}
+
+function ping_form_callback(data) {
+  var start_datetime = document.getElementById('start_datetime');
+  var hours = document.getElementById('hours');
+  var days = document.getElementById('days');
+  var result_div = document.getElementById('result_div');
+  var content = '';
+  if(data != null) {
+    if(data.result_code == 0) {
+      start_datetime.value = data.start_date_time;
+      hours.value = data.hours;
+      days.value = data.days;
+      for(var im in data.images) {
+        content += (data.images[im] + '\n');
+      }
+      result_div.innerHTML=content
+    } else {
+      content = "<h3>Error</h3><ul>";
+      for(var m in data.messages) {
+        content += (data.messages[m] + '<br>\n');
+      }
+      content += '</ul>';
+      result_div.innerHTML=content;
+    }
+  }
+}
+
+function fetch_ping_data(last_seen) {
+  var the_form = document.getElementById('expanded_form');
+  var url = '/ruby/ping_basic.rbx?host=' + window.current_tower ;
+  var result_div = document.getElementById('result_div');
+
+  if(result_div.firstChild) {
+    result_div.insertBefore(working_img, result_div.firstChild);
+  } else {
+    result_div.appendChild(working_img);
+  }
+
+  for(var gt in graph_type){
+    url += '&graphtype=' + graph_type[gt];
+  }
+  if(last_seen) { url += '&last_seen=true'; }
+  else { url += '&start=' + the_form.start_datetime.value + '&days=' + the_form.days.value + '&hours=' + the_form.hours.value; }
+  setTimeout(function () {RGraph.AJAX.getJSON(url , ping_form_callback); }, 0 );
+}
+
+
+function tower_graph(t) {
+  var result_div = document.getElementById("result_div");
+  switch(t) {
+    case -1: case "-1": window.current_tower = ''; result_div.innerHTML = ''; break; //None
+    case -2: case "-2": window.current_tower = 'all&dist=true'; fetch_ping_data(false); break;
+    case -3: case "-3": window.current_tower = 'all'; fetch_ping_data(false); break;
+    default: window.current_tower = window.tower_locations[t].site_name; fetch_ping_data(false); break;
+  }
+}
+
+function tower_completion() {
+  parse_args();
+}
+
+function set_now() {
+  var datetime_span = document.getElementById('datetime');
+  window.now = new Date();
+  var tzo = (window.now.getTimezoneOffset()/60)*(-1);
+  window.now.setHours(window.now.getHours() + tzo);
+  datetime_span.innerHTML = window.now.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function init_start_datetime() {
+  var the_form = document.getElementById('expanded_form');
+  set_now();
+  var start_date = window.now;
+  start_date.setSeconds(0);
+  start_date.setHours(start_date.getHours() - 1);
+  the_form.start_datetime.value = start_date.toISOString().slice(0, 19).replace('T', ' ');
+  the_form.days.value = 0.0;
+  the_form.hours.value = 1.0;
+  window.this_month = false;
+}
+
+function init() {
+  init_start_datetime();
+  logged_in(true, '/admin/traffic.html');
+  tower_site_list( [ document.getElementById('tower_list') ], true, tower_completion );
+}
+
+function post_form(button_id) {
+  set_now();
+  window.graph_type = graph_type_map[button_id];
+  window.this_month = false;
+  fetch_ping_data(button_id == 'last_seen')
+}
+
+function post_form_last_day() {
+  var the_form = document.getElementById('expanded_form');
+  set_now();
+  var start_date = window.now;
+  start_date.setSeconds(0);
+  start_date.setDate(start_date.getDate() - 1);
+  the_form.start_datetime.value = start_date.toISOString().slice(0, 19).replace('T', ' ');
+  the_form.days.value = 1.0;
+  the_form.hours.value = 0.0;
+  window.this_month = false;
+  fetch_ping_data(false);
+}
+
+function post_form_last_hour() {
+  init_start_datetime();
+  fetch_ping_data(false);
+}
+
+function post_form_last_period() {
+  if(window.this_month ) {
+    post_form_month(0);
+  } else {
+    var the_form = document.getElementById('expanded_form');
+    set_now();
+    var start_date = window.now;
+    start_date.setSeconds(0);
+    start_date.setDate(start_date.getDate() - parseFloat(the_form.days.value) );
+    start_date.setHours(start_date.getHours() - parseFloat(the_form.hours.value));
+    the_form.start_datetime.value = start_date.toISOString().slice(0, 19).replace('T', ' ');
+    fetch_ping_data(false);
+  }
+}
+
+function post_form_month(offset) {
+  window.this_month = true;
+  var the_form = document.getElementById('expanded_form');
+  set_now();
+  var start_date = window.now
+  var tzo = (window.now.getTimezoneOffset()/60)*(-1);
+  start_date.setHours(start_date.getHours() - tzo);
+  year = start_date.getFullYear();
+  month = start_date.getMonth() + 1 + offset; //jan == 0?
+  the_form.hours.value = 0.0
+  the_form.days.value = start_date.getDate();
+  the_form.start_datetime.value = year + '-' + ("0" + month).slice(-2) + '-01 00:00:00'
+  fetch_ping_data(false);
+}
+
+function post_form_offset_period(direction) {
+  if(this_month) {
+    post_form_month(direction);
+  } else {
+    var the_form = document.getElementById('expanded_form');
+    set_now();
+    var start_date = new Date(the_form.start_datetime.value.slice(0, 19).replace(' ', 'T'));
+    start_date.setSeconds(0);
+    start_date.setDate(start_date.getDate() + (direction * parseFloat(the_form.days.value)) );
+    start_date.setHours(start_date.getHours() + (direction * parseFloat(the_form.hours.value)));
+    the_form.start_datetime.value = start_date.toISOString().slice(0, 19).replace('T', ' ');
+    fetch_ping_data(false);
+  }
+}
+
+
+function post_form_offset_day(direction) {
+  var the_form = document.getElementById('expanded_form');
+  the_form.days.value = 1.0;
+  the_form.hours.value = 0.0;
+  window.this_month = false;
+  post_form_offset_period(direction);
+}
+
+function post_form_offset_hour(direction) {
+  var the_form = document.getElementById('expanded_form');
+  the_form.days.value = 0.0;
+  the_form.hours.value = 1.0;
+  window.this_month = false;
+  post_form_offset_period(direction);
+}
+</script>
+</head>
+<body onload="init();">
+  <div align="right">
+    <select id='tower_list' onchange="tower_graph(this.value);">
+          <option value=-1>none</option>
+          <option value=-2>By Tower</option>
+          <option value=-3>All sites</option>
+    </select>&nbsp; <img src="/images/refresh.gif" onclick="tower_graph(window.tower_list.value);">
+    <span id="login_span"></span>
+    <span id="datetime">0000-00-00 00:00:00</span>
+  </div><br>
+  <div>
+    <span style="text-align: center; float:left;">
+      <BUTTON type="submit" id="prev_day" onClick="post_form_offset_day(-1);this.blur();">  &lt;&lt; </BUTTON>
+      <BUTTON type="submit" id="last_day" onClick="post_form_last_day();this.blur();">  Last Day </BUTTON>
+      <BUTTON type="submit" id="next_day" onClick="post_form_offset_day(1);this.blur();">  &gt;&gt; </BUTTON>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+      <BUTTON type="submit" id="prev_hour" onClick="post_form_offset_hour(-1);this.blur();">  &lt;&lt; </BUTTON>
+      <BUTTON type="submit" id="last_hour" onClick="post_form_last_hour();this.blur();">  Last Hour </BUTTON>
+      <BUTTON type="submit" id="next_hour" onClick="post_form_offset_hour(1);this.blur();">  &gt;&gt; </BUTTON>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <BUTTON type="submit" id="prev_period" onClick="post_form_offset_period(-1);this.blur();return false"> &lt;&lt; </BUTTON>
+    <BUTTON type="submit" id="thismonth" onClick="post_form_month(0);this.blur();return false"> This Month </BUTTON>
+    <BUTTON type="submit" id="next_period" onClick="post_form_offset_period(1);this.blur();return false"> &gt;&gt; </BUTTON>
+  </div> <br>
+  <div style="display:none;">
+    <form id='expanded_form' onSubmit="return false;">
+      Start Date-time <input type="text" id="start_datetime" style="width: 125px; padding: 5px" size="19" value="0000-00-00 00:00:00">
+      Days <input type="text" name="days" value="0" id="days" size="5">
+      Hours <input type="text" name="hours" value="1.0" id="hours" size="4">
+    </form>
+  </div>
+  <div id="result_div"></div>
+</body>
+</html>

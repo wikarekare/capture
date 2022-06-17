@@ -1,4 +1,4 @@
-#!/usr/local/ruby3.0/bin/ruby
+#!/usr/local/bin/ruby
 require '/wikk/rlib/wikk_conf.rb'
 
 DAYS_IN_MONTH = [ nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . /wikk/etc/wikk.conf
 
 for i in ${NTM_LOG_DIR}/*.fdf.out

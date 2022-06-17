@@ -1,4 +1,4 @@
-#!/usr/local/ruby3.0/bin/ruby
+#!/usr/local/bin/ruby
 
 # Generate the IP to site name yml file we use for processing
 # traffic logs into site usage data.

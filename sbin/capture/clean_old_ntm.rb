@@ -1,4 +1,4 @@
-#!/usr/local/ruby3.0/bin/ruby
+#!/usr/local/bin/ruby
 def object_clean_dir(directory:)
   begin
     Dir.open(directory).each do |filename|

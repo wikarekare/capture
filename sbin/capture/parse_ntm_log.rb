@@ -1,4 +1,4 @@
-#!/usr/local/ruby3.0/bin/ruby
+#!/usr/local/bin/ruby
 require 'time' # don't we all
 require 'pp'
 require 'yaml'

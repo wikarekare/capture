@@ -1,4 +1,4 @@
-#!/usr/local/ruby3.0/bin/ruby
+#!/usr/local/bin/ruby
 require 'getoptlong'
 RLIB = '../../rlib'
 require_relative "#{RLIB}/wikk_conf.rb"

@@ -1,0 +1,195 @@
+<html><head><title>Traffic by Tower</title>
+  <script src="/js/jquery-3.0.0.min.js"></script>
+  <script src="/js/wikk_ajax-min.js"></script>
+  <script src="/js/wikk_web_auth-min.js"></script>
+  <script src="/js/wikk_params.js"></script>
+  <script src="/js/ping.js"></script>
+  <script src="/js/ping_comms.js"></script>
+  <script src="/js/last_seen_comms.js"></script>
+  <script src="/js/customer_comms.js"></script>
+  <script src="/js/distribution_comms.js"></script>
+  <script src="/js/traffic_comms.js"></script>
+
+<script>
+var site_name = "dist";
+var graph_type = [ 'graph3d' ];
+var working_img = new Image();
+working_img.src = "/images/chain_waiting_image/chain.gif";
+var imageCloseTriangle = new Image();
+var imageExpandedTriangle = new Image();
+
+imageCloseTriangle.src = "/images/closedTriangle.gif";
+imageCloseTriangle.onclick="toggle_form_state();"
+imageExpandedTriangle.src = "/images/expandedTriangle.gif";
+imageExpandedTriangle.onclick="toggle_form_state();"
+
+function toggle_form_state() {
+  var simple_state_div = document.getElementById("simple");
+  var admin_state_div = document.getElementById("extended");
+  var tower_sites_span = document.getElementById("tower_sites");
+  var image1 = document.getElementById('form_state');
+
+  if(wikk_web_auth.authenticated()) {
+    if(simple_form) {
+      simple_form = false;
+      //simple_state_div.style.display = 'none';
+      admin_state_div.style.display = 'block';
+      tower_sites_span.style.display = 'block';
+      image1.src = imageExpandedTriangle.src;
+    } else {
+      simple_form = true;
+      //simple_state_div.style.display = 'block';
+      admin_state_div.style.display = 'none';
+      tower_sites_span.style.display = 'none';
+      image1.src = imageCloseTriangle.src;
+    }
+  } else {
+    if(simple_form == false) {
+      simple_form = true;
+      //simple_state_div.style.display = 'block';
+      admin_state_div.style.display = 'none';
+      tower_sites_span.style.display = 'none';
+      image1.src = imageCloseTriangle.src;
+    }
+  }
+  return true;
+}
+
+function parse_args() {
+  var params = wikk_params.getURLParameters();
+  var start_time_arg = wikk_params.get_argv('start_time');
+  var end_time_arg = wikk_params.get_argv('end_time');
+  var days_arg = wikk_params.get_argv('days');
+  var hours_arg = wikk_params.get_argv('hour');
+  var site_name_arg = wikk_params.get_argv('site_name');
+  var host = wikk_params.get_argv('host');
+  var graphtype_arg = wikk_params.get_argv('graphtype');
+
+  days = days_arg == null ? null : parseFloat(days_arg);
+  hours = hours_arg == null ? null : parseFloat(hours_arg);
+  try {
+      init_start_datetime(start_time_arg, end_time_arg, days, hours);
+  }
+  catch(err) {
+      alert(err.message);
+      init_start_datetime();
+  }
+
+  if(graphtype_arg != null && graph_type_map[graphtype_arg] != null) {
+    graph_type = graph_type_map[graphtype_arg];
+  }
+  if(host != null) { site_name_arg = host; }
+  if( site_name_arg != null )
+    window.site_name = site_name_arg;
+  if(window.site_name != null) {
+    var tower = document.getElementById("tower_list");
+    switch(site_name) {
+      case 'dist': tower.value = -2; tower_graph(-2); break;
+      case 'all':  tower.value = -3; tower_graph(-3); break;
+      case 'link5':  tower.value = -4; tower_graph(-4); break;
+      case 'link6':  tower.value = -5; tower_graph(-5); break;
+      case 'link7':  tower.value = -6; tower_graph(-6); break;
+      default:
+        var t = wikk_distribution.find_by_site_name(window.site_name);
+        if(t != null) {
+          tower.value = t;
+          tower_graph(t);
+        }
+    }
+  }
+}
+
+function tower_graph(t) {
+  var result_div = document.getElementById("result_div");
+  switch(t) {
+    case -1: case "-1": window.site_name = ''; result_div.innerHTML = ''; break; //None
+    case -2: case "-2": window.site_name = 'dist'; get_ping_data(); break;
+    case -3: case "-3": window.site_name = 'all'; get_ping_data(); break;
+    case -4: case "-4": window.site_name = 'link5'; graph_type = graph_type_map['dist']; get_ping_data(); break;
+    case -5: case "-5": window.site_name = 'link6'; graph_type = graph_type_map['dist']; get_ping_data(); break;
+    case -6: case "-6": window.site_name = 'link7'; graph_type = graph_type_map['dist']; get_ping_data(); break;
+    default: window.site_name = wikk_distribution.site_list_entry(t).site_name; get_ping_data(); break;
+  }
+}
+
+function tower_completion() {
+  parse_args();
+}
+
+function init() {
+  init_start_datetime();
+
+  wikk_web_auth.logged_in(true, "/admin/traffic.html", "login_span", null)
+
+  var the_select = document.getElementById('tower_list');
+  wikk_distribution.get_site_list( [ the_select ], true, tower_completion );
+}
+</script>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+</head>
+<body onload="init();">
+  <div style="padding-left: 0px">
+    <span id='simple' style="margin-left:0px;display:block;" >
+        <span style="text-align: center; float:left;">
+          <BUTTON type="submit" id="prev_hour" onClick="post_form_offset_hour(-1);this.blur();">  &lt;&lt; </BUTTON>
+          <BUTTON type="submit" id="last_hour" onClick="post_form_last_hour();this.blur();">  Last Hour </BUTTON>
+          <BUTTON type="submit" id="next_hour" onClick="post_form_offset_hour(1);this.blur();">  &gt;&gt; </BUTTON>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <BUTTON type="submit" id="prev_day" onClick="post_form_offset_day(-1);this.blur();">  &lt;&lt; </BUTTON>
+          <BUTTON type="submit" id="last_day" onClick="post_form_today();this.blur();">  Today </BUTTON>
+          <BUTTON type="submit" id="next_day" onClick="post_form_offset_day(1);this.blur();">  &gt;&gt; </BUTTON>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </span>
+
+        <span style="text-align: right; float:right;">
+          <span id="login_span"></span> &nbsp;
+          <img id='form_state' src="/images/closedTriangle.gif"  onclick="toggle_form_state();" /> &nbsp;
+          <span id="datetime">0000-00-00 00:00:00</span>
+          <br>
+          <span id='tower_sites' style="display:none;">
+            <select id='tower_list' onchange="tower_graph(this.value);">
+                  <option value=-1>none</option>
+                  <option value=-2>By Tower</option>
+                  <option value=-3>All sites</option>
+                  <option value=-4>Link 5</option>
+                  <option value=-5>Link 6</option>
+                  <option value=-6>Link 7</option>
+            </select>&nbsp;
+            <img src="/images/refresh.gif" onclick="tower_graph(window.tower_list.value);">
+          </span>
+        </span>
+    </span> <br>
+
+
+    <span id='extended' style="margin-left:0px;display:none;" >
+      <p><span style="margin-left:0px; text-align:left; float:left;">
+        <form id='expanded_form' onSubmit="return false;">
+          Start <input type="text" id="start_datetime" style="width: 150px; padding: 5px" size="19" value="0000-00-00 00:00:00">
+          End Date-time <input type="text" id="end_datetime" style="width: 150px; padding: 5px" size="19" value="0000-00-00 00:00:00">
+          <input type="checkbox" id="delayed" value="delayed" onClick="set_delayed(this)"> Delay
+          <br>
+          Days <input type="text" name="days" value="0" id="days" size="5">
+          Hours <input type="text" name="hours" value="1.0" id="hours" size="4">
+          <BUTTON type="submit" id="set_endtime" onClick="post_form_offset_period(0);this.blur();return false">Set Endtime</BUTTON>
+          &nbsp;&nbsp;
+          <BUTTON type="submit" id="prev_period" onClick="post_form_offset_period(-1);this.blur();return false"> &lt;&lt; </BUTTON>
+          <BUTTON type="submit" id="endnow" onClick="post_form_last_period();this.blur();return false">Now - Period</BUTTON>
+          <BUTTON type="submit" id="next_period" onClick="post_form_offset_period(1);this.blur();return false"> &gt;&gt; </BUTTON>
+          &nbsp;&nbsp;
+          <BUTTON type="submit" id="prev_month" onClick="post_form_month(-1);this.blur();return false"> &lt;&lt; </BUTTON>
+          <BUTTON type="submit" id="thismonth" onClick="post_form_month(0);this.blur();return false"> This Month </BUTTON>
+          <BUTTON type="submit" id="next_month" onClick="post_form_month(1);this.blur();return false"> &gt;&gt; </BUTTON>
+        </form>
+        <BUTTON type="submit" id="pings_and_traffic" onClick="post_form(this.id);this.blur();return false"> Tower Pings and Traffic </BUTTON>
+        <BUTTON type="submit" id="pings" onClick="post_form(this.id);this.blur();return false"> Just Tower Pings </BUTTON>
+        <BUTTON type="submit" id="traffic" onClick="post_form(this.id);this.blur();return false"> Just Tower Traffic </BUTTON>
+        <BUTTON type="submit" id="dist" onClick="post_form(this.id);this.blur();return false"> 2D Traffic per site </BUTTON>
+        <BUTTON type="submit" id="graph3d" onClick="post_form(this.id);this.blur();return false"> 3D Traffic per site </BUTTON>
+        <BUTTON type="submit" id="pdist" onClick="post_form(this.id);this.blur();return false"> Pings per Site </BUTTON>
+      </span></p>
+  </span>
+  </div>
+  <div id="result_div"></div>
+</body>
+</html>

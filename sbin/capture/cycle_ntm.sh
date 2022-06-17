@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . /wikk/etc/wikk.conf
 
 #No longer produce wikk.fdf files. We generate hourly ones directly
@@ -9,4 +9,3 @@
 
 #Remove anything older than 14 days, as it should have been processed well before then
 /usr/bin/find ${NTM_LOG_DIR} -mtime +31d -name wikk\* -maxdepth 1 -exec /bin/rm -f {} \;
-

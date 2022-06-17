@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 . /wikk/etc/wikk.conf
 
 #logs are in ${FLOW_LOG_DIR}/log/year/year-month/year-month-day/
@@ -17,5 +17,3 @@ ${SBIN_DIR}/capture/isnewer_flow.rb ${FLOW_LOG_DIR}/log/$dir_today_2
 ${SBIN_DIR}/capture/isnewer_flow.rb ${FLOW_LOG_DIR}/log/$dir_today_1
 #process todays logs.
 ${SBIN_DIR}/capture/isnewer_flow.rb ${FLOW_LOG_DIR}/log/$dir_today
-
-
