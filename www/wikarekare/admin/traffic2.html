@@ -2,7 +2,10 @@
 <script src="/js/RGraph/libraries/RGraph.common.core.js" ></script>
 <script src="/js/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
-<script src="/js/local.js"></script>
+<script src="/js/wikk_params.js"></script>
+<script src="/js/customer_comms.js"></script>
+<script src="/js/distribution_comms.js"></script>
+<script src="/js/traffic_comms.js"></script>
 
 <script>
 var current_tower = "";
@@ -18,8 +21,9 @@ var graph_type_map = {
   working_img.src = "/images/chain_waiting_image/chain.gif";
 
 function parse_args() {
-  var site_name = getURLParameters('site_name');
-  var host = getURLParameters('host');
+  wikk_params.getURLParameters();
+  var site_name = wikk_params.get_argv('site_name');
+  var host = wikk_params.get_argv('host');
   if(host != null) { site_name = host; }
   if( site_name != null ) {
     var tower = document.getElementById("tower_list");

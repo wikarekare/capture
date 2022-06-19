@@ -56,7 +56,7 @@ function toggle_form_state() {
 }
 
 function parse_args() {
-  var params = wikk_params.getURLParameters();
+  wikk_params.getURLParameters();
   var start_time_arg = wikk_params.get_argv('start_time');
   var end_time_arg = wikk_params.get_argv('end_time');
   var days_arg = wikk_params.get_argv('days');
