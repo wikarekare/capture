@@ -64,7 +64,7 @@ class Traffic < RPC
     SQL
 
     rows = []
-    WIKK::SQL.connect(@config) do |sql|
+    WIKK::SQL.connect(@db_config) do |sql|
       sql.each_hash(query) do |row|
         log_timestamp = Time.parse(row['event_time'])
         # Filling in missing points with nil values, helps with graphing.

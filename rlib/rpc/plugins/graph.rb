@@ -52,7 +52,7 @@ class Graph < RPC
 
     graph_types = result.length == 0 ? [ 'traffic_split', 'ping' ] : result
 
-    images, message = gen_images(mysql_conf: @config, hosts: hosts, graph_types: graph_types,
+    images, message = gen_images(mysql_conf: @db_config, hosts: hosts, graph_types: graph_types,
                                  start_time: start_time, end_time:  end_time
     )
 
