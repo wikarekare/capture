@@ -6,6 +6,7 @@
 <script src="/js/customer_comms.js"></script>
 <script src="/js/distribution_comms.js"></script>
 <script src="/js/traffic_comms.js"></script>
+<script src="/js/wikk_web_auth-min.js"></script>
 
 <script>
 var current_tower = "";
@@ -123,8 +124,8 @@ function init_start_datetime() {
 
 function init() {
   init_start_datetime();
-  logged_in(true, '/admin/traffic.html');
-  tower_site_list( [ document.getElementById('tower_list') ], true, tower_completion );
+  wikk_web_auth.logged_in(true, "/admin/traffic2.html", "login_span", null)
+  wikk_distribution.get_site_list( [ document.getElementById('tower_list') ], true, tower_completion );
 }
 
 function post_form(button_id) {
