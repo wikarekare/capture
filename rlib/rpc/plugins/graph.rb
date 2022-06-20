@@ -27,8 +27,8 @@ class Graph < RPC
       AND dns_subnet.dns_network_id = dns_network.dns_network_id
       AND (dns_network.network+subnet * subnet_size) = (INET_ATON('#{address}') & INET_ATON('#{mask}'))
     SQL
-    result = sql_query(query: query)
-    return result['rows'].length > 0 ? result['rows'][0]['site_name'] : ''
+    result = sql_query_hash(query: query)
+    return result.length > 0 ? result.first['site_name'] : ''
   end
 
   rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
