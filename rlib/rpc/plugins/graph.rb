@@ -12,21 +12,28 @@ class Graph < RPC
     @set_acl = []
     @local_site = site_name(ENV['REMOTE_ADDR'], '255.255.255.224')
     if authenticated
-      @result_acl +=  [ 'usage', 'hosts', 'host_histogram', 'ports', 'port_histogram', 'signal',
-                        'internal_hosts', 'dist', 'graphP2', 'graphC2', 'pdist'
+      @result_acl += [ 'usage', 'hosts', 'host_histogram', 'ports', 'port_histogram', 'signal',
+                       'internal_hosts', 'dist', 'graphP2', 'graphC2', 'pdist'
 ]
     end
   end
 
   def site_name(address, mask)
-    query = "select customer.site_name from customer,dns_network,dns_subnet,customer_dns_subnet where customer.customer_id = customer_dns_subnet.customer_id and customer_dns_subnet.dns_subnet_id = dns_subnet.dns_subnet_id and dns_subnet.dns_network_id = dns_network.dns_network_id and (dns_network.network+subnet * subnet_size) = (inet_aton('#{address}') & inet_aton('#{mask}'))"
+    query = <<~SQL
+      SELECT customer.site_name
+      FROM customer,dns_network,dns_subnet,customer_dns_subnet
+      WHERE customer.customer_id = customer_dns_subnet.customer_id
+      AND customer_dns_subnet.dns_subnet_id = dns_subnet.dns_subnet_id
+      AND dns_subnet.dns_network_id = dns_network.dns_network_id
+      AND (dns_network.network+subnet * subnet_size) = (INET_ATON('#{address}') & INET_ATON('#{mask}'))
+    SQL
     result = sql_query(query: query)
     return result['rows'].length > 0 ? result['rows'][0]['site_name'] : ''
   end
 
   rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
     if !@authenticated && @local_site != '' && select_on['hosts'].length == 1 && select_on['hosts'][0] == @local_site
-      @result_acl +=  [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
+      @result_acl += [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
     end
 
     select_on.each { |k, _v| acceptable(field: k, acceptable_list: @select_acl) } if select_on != nil

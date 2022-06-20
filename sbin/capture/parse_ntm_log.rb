@@ -2,7 +2,7 @@
 require 'time' # don't we all
 require 'pp'
 require 'yaml'
-require 'mysql'
+require 'wikk_sql'
 require 'wikk_configuration'
 RLIB = '/wikk/rlib'
 require_relative "#{RLIB}/wikk_conf.rb"
@@ -109,13 +109,13 @@ end
 
 def save
   @mysql_conf = WIKK::Configuration.new(MYSQL_CONF)
-  WIKK::SQL.connect(@mysql_conf) do |my|
+  WIKK::SQL.connect(@mysql_conf) do |sql|
     each_record do |dt, host, sum|
       query = <<~SQL
         REPLACE INTO log_summary (  bytes_in, bytes_out, hostname, log_timestamp )
           VALUES ( #{sum[1]}, #{sum[0]}, '#{host}' ,'#{dt.strftime('%Y-%m-%d %H:%M:%S')}' )
       SQL
-      my.query( query )
+      sql.query( query )
     end
   end
 end
