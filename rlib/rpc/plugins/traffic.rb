@@ -7,6 +7,7 @@
 # | log_timestamp | datetime   | NO   | PRI | NULL    |       |
 #+---------------+------------+------+-----+---------+-------+
 
+# Traffic related methods
 class Traffic < RPC
   def initialize(authenticated = false)
     super(authenticated)
@@ -56,9 +57,9 @@ class Traffic < RPC
     query = <<~SQL
       SELECT  date_format(log_timestamp, "#{time_format_str}") as event_time, sum(bytes_in/(1024*1024.0)) as mbytes_in, sum((bytes_out)/(1024*1024.0)) as mbytes_out
       FROM    log_summary
-      WHERE   hostname = '#{WIKK::SQL.escape(select_on['hostname'])}'         AND
-              log_timestamp >= '#{last_time.strftime('%Y-%m-%d %H:%M:%S')}' AND
-              log_timestamp <= '#{end_time.strftime('%Y-%m-%d %H:%M:%S')}'
+      WHERE   hostname = '#{WIKK::SQL.escape(select_on['hostname'])}'
+      AND log_timestamp >= '#{last_time.strftime('%Y-%m-%d %H:%M:%S')}'
+      AND log_timestamp <= '#{end_time.strftime('%Y-%m-%d %H:%M:%S')}'
       GROUP BY event_time
       ORDER BY event_time;
     SQL
