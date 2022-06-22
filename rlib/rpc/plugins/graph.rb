@@ -1,4 +1,5 @@
-require '/wikk/rlib/monitor/gen_images.rb'
+RLIB = '/wikk/rlib'
+require "#{RLIB}/monitor/gen_images.rb"
 # Legacy. We are moving all this to run in the browser.
 # Not an SQL plugin.
 # Generates graphs on the web site, and returns URIs to them.

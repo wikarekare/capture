@@ -1,5 +1,7 @@
 #!/usr/local/bin/ruby
-require '/wikk/rlib/wikk_conf.rb'
+RLIB = '/wikk/rlib'
+
+require "#{RLIB}/wikk_conf.rb"
 
 DAYS_IN_MONTH = [ nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 

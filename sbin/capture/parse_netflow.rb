@@ -3,7 +3,7 @@ require 'getoptlong'
 require 'time'
 require 'pp'
 require 'ipaddr'
-RLIB = '../../rlib'
+RLIB = '/wikk/rlib'
 require_relative "#{RLIB}/wikk_conf.rb"
 
 VERSION = 1.2

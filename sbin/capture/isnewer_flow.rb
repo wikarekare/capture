@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby
 require 'getoptlong'
-RLIB = '../../rlib'
+RLIB = '/wikk/rlib'
 require_relative "#{RLIB}/wikk_conf.rb"
 
 VERSION = 1.2
