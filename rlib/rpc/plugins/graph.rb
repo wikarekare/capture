@@ -1,4 +1,3 @@
-RLIB = '/wikk/rlib'
 require "#{RLIB}/monitor/gen_images.rb"
 # Legacy. We are moving all this to run in the browser.
 # Not an SQL plugin.
