@@ -4,7 +4,7 @@ require 'pp'
 require 'yaml'
 require 'wikk_sql'
 require 'wikk_configuration'
-RLIB = '/wikk/rlib'
+RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/wikk_conf.rb"
 
 def adsl_ip(ip)
