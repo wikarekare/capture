@@ -2,7 +2,7 @@ require "#{RLIB}/monitor/gen_images.rb"
 # Legacy. We are moving all this to run in the browser.
 # Not an SQL plugin.
 # Generates graphs on the web site, and returns URIs to them.
-class Graph < RPC
+class GnuGraph < RPC
   # Expect "hosts": ["host1",...]
   def initialize(authenticated = false)
     super(authenticated)
@@ -10,7 +10,8 @@ class Graph < RPC
     @select_acl = [ 'hosts', 'start_time', 'end_time', 'last_seen' ]
     @result_acl = [ 'traffic_split', 'ping', 'graph3d', 'traffic_dual' ]
     @set_acl = []
-    @local_site = site_name(ENV['REMOTE_ADDR'], '255.255.255.224')
+    @requestor = ENV['REMOTE_ADDR']
+    @local_site = site_name(@requestor, '255.255.255.224')
     if authenticated
       @result_acl += [ 'usage', 'hosts', 'host_histogram', 'ports', 'port_histogram', 'signal',
                        'internal_hosts', 'dist', 'graphP2', 'graphC2', 'pdist'
@@ -75,7 +76,9 @@ class Graph < RPC
       AND dns_subnet.dns_network_id = dns_network.dns_network_id
       AND (dns_network.network+subnet * subnet_size) = (INET_ATON('#{address}') & INET_ATON('#{mask}'))
     SQL
-    result = sql_query_hash(query: query)
-    return result.length > 0 ? result.first['site_name'] : ''
+    WIKK::SQL.connect(@db_config) do |sql|
+      result = sql.query_hash(query: query)
+      return result.length > 0 ? result.first['site_name'] : ''
+    end
   end
 end
