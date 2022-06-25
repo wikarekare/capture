@@ -77,7 +77,7 @@ class GnuGraph < RPC
       AND (dns_network.network+subnet * subnet_size) = (INET_ATON('#{address}') & INET_ATON('#{mask}'))
     SQL
     WIKK::SQL.connect(@db_config) do |sql|
-      result = sql.query_hash(query: query)
+      result = sql.query_hash(query)
       return result.length > 0 ? result.first['site_name'] : ''
     end
   end
