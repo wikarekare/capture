@@ -1,6 +1,6 @@
 RLIB = '/wikk/rlib' unless defined? RLIB
 require_relative "#{RLIB}/account/graph_sql_traffic.rb"
-require_relative 'pinglog.rb'
+require_relative 'ping_log.rb'
 require_relative 'signal_log_new.rb'
 
 # Magic host name 'all'
@@ -71,7 +71,7 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
                     end
         when 'ping'; # Smoke Ping like graph, over period.
           h = h.gsub(/link/, 'external') if h =~ /^link/ # Make up your mind!
-          ping_record = Ping.new(mysql_conf)
+          ping_record = Ping_Log.new(mysql_conf)
           if (error = ping_record.gnuplot(h, Time.at(start_time), Time.at(end_time)) ).nil?
             images << "<p><img src=\"/netstat/#{h}-p5f.png?start_time=#{Time.at(start_time).xmlschema}&end_time=#{Time.at(end_time).xmlschema}\"></p>\n"
           else
@@ -101,13 +101,13 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
           end
         when 'pdist'; # 2D distribution site pings, plus each client.
           images << Graph_2D.new(mysql_conf, h, false, Time.at(start_time), Time.at(end_time)).images
-          ping_record = Ping.new(mysql_conf)
+          ping_record = Ping_Log.new(mysql_conf)
           if (error = ping_record.gnuplot(h, Time.at(start_time), Time.at(end_time)) ).nil?
             images << "<p><img src=\"/netstat/#{h}-p5f.png?start_time=#{Time.at(start_time).xmlschema}&end_time=#{Time.at(end_time).xmlschema}\"></p>\n"
           else
             message << error.to_s
           end
-          images << Ping.graph_clients(mysql_conf, h, Time.at(start_time), Time.at(end_time) )
+          images << Ping_Log.graph_clients(mysql_conf, h, Time.at(start_time), Time.at(end_time) )
         when 'internal_hosts'; # Histogram of a sites internal IP address usage.
           images << Graph_Internal_Hosts.new( h, Time.at(start_time), Time.at(end_time)).images
         else # 2D traffic. Assumes traffic graphs split in/out
@@ -117,7 +117,7 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
                       Graph_2D.new(mysql_conf, h, false, Time.at(start_time), Time.at(end_time) ).images
                     end
         end
-      rescue Exception => e
+      rescue Exception => e # rubocop:disable Lint/RescueException Called by CGI, so we want it to report back
         backtrace = e.backtrace[0].split(':')
         message << "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}"
       end
