@@ -371,7 +371,7 @@ if ARGV.length == 1
   # @last_valid_date = @logfile_date - FLOWLOG_INTERVAL * 60  #5 minutes before the last entry in the file.
 end
 
-$stderr.each_line do |line|
+$stdin.each_line do |line|
   # s.each_line do |line|
   next unless line[0, 1] != '#'
 
