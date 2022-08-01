@@ -83,32 +83,20 @@ function parse_args() {
     window.site_name = site_name_arg;
   if(window.site_name != null) {
     var tower = document.getElementById("tower_list");
-    switch(site_name) {
-      case 'dist': tower.value = -2; tower_graph(-2); break;
-      case 'all':  tower.value = -3; tower_graph(-3); break;
-      case 'link5':  tower.value = -4; tower_graph(-4); break;
-      case 'link6':  tower.value = -5; tower_graph(-5); break;
-      case 'link7':  tower.value = -6; tower_graph(-6); break;
-      default:
-        var t = wikk_distribution.find_by_site_name(window.site_name);
-        if(t != null) {
-          tower.value = t;
-          tower_graph(t);
-        }
-    }
+    tower_graph(site_name)
   }
 }
 
-function tower_graph(t) {
+function tower_graph(site_name) {
   var result_div = document.getElementById("result_div");
-  switch(t) {
-    case -1: case "-1": window.site_name = ''; result_div.innerHTML = ''; break; //None
-    case -2: case "-2": window.site_name = 'dist'; get_ping_data(); break;
-    case -3: case "-3": window.site_name = 'all'; get_ping_data(); break;
-    case -4: case "-4": window.site_name = 'link5'; graph_type = graph_type_map['dist']; get_ping_data(); break;
-    case -5: case "-5": window.site_name = 'link6'; graph_type = graph_type_map['dist']; get_ping_data(); break;
-    case -6: case "-6": window.site_name = 'link7'; graph_type = graph_type_map['dist']; get_ping_data(); break;
-    default: window.site_name = wikk_distribution.site_list_entry(t).site_name; get_ping_data(); break;
+  switch(site_name) {
+    case "None": window.site_name = ''; result_div.innerHTML = ''; break; //None
+    case "dist": window.site_name = 'dist'; get_ping_data(false); break;
+    case "all": window.site_name = 'all'; get_ping_data(false); break;
+    case "link5": window.site_name = 'link5'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
+    case "link6": window.site_name = 'link6'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
+    case "link7": window.site_name = 'link7'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
+    default: window.site_name = site_name; get_ping_data(false); break;
   }
 }
 
@@ -149,12 +137,12 @@ function init() {
           <br>
           <span id='tower_sites' style="display:none;">
             <select id='tower_list' onchange="tower_graph(this.value);">
-                  <option value=-1>none</option>
-                  <option value=-2>By Tower</option>
-                  <option value=-3>All sites</option>
-                  <option value=-4>Link 5</option>
-                  <option value=-5>Link 6</option>
-                  <option value=-6>Link 7</option>
+                  <option value="None">none</option>
+                  <option value="dist">By Tower</option>
+                  <option value="all">All sites</option>
+                  <option value='link5'>Link 5</option>
+                  <option value='link6'>Link 6</option>
+                  <option value='link7'>Link 7</option>
             </select>&nbsp;
             <img src="/images/refresh.gif" onclick="tower_graph(window.tower_list.value);">
           </span>
