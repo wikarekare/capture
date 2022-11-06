@@ -94,11 +94,106 @@ class Traffic < RPC
     return { 'rows' => rows, 'affected_rows' => sql.affected_rows, 'hostname' => select_on['hostname'] }
   end
 
+  rmethod :site_daily_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
+    hostname = select_on['hostname']
+    if hostname.nil? || hostname == ''
+      requestor = ENV.fetch('REMOTE_ADDR')
+      hostname = site_name(requestor, '255.255.255.224')
+      if hostname.nil? || hostname == ''
+        raise 'Not a local site' # Don't know who this is
+      end
+    end
+
+    month_str = select_on['month']
+    if month_str.nil? || month_str == ''
+      month = Date.today
+    else
+      Date.parse(month)
+    end
+
+    start = Date.new(month.year, month.month, 1)
+
+    query = <<~SQL
+      SELECT  bill_day, hostname, used_bytes/1073741824 AS used_gbytes, charged_bytes/1073741824 AS charged_gbytes
+      FROM daily_usage
+      WHERE bill_day >= "#{start}" AND bill_day < "#{start.next_month}"
+      AND hostname = "#{hostname}"
+      ORDER BY bill_day
+    SQL
+
+    return sql_query(query: query)
+  end
+
+  rmethod :site_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
+    hostname = select_on['hostname']
+    if hostname.nil? || hostname == ''
+      requestor = ENV.fetch('REMOTE_ADDR')
+      hostname = site_name(requestor, '255.255.255.224')
+      if hostname.nil? || hostname == ''
+        raise 'Not a local site' # Don't know who this is
+      end
+    end
+
+    month_str = select_on['month']
+    if month_str.nil? || month_str == ''
+      month = Date.today
+    else
+      Date.parse(month)
+    end
+
+    start = Date.new(month.year, month.month, 1)
+
+    query = <<~SQL
+      SELECT  hostname, sum(used_bytes)/1073741824 AS used_gbytes, sum(charged_bytes)/1073741824 AS charged_gbytes
+      FROM daily_usage
+      WHERE bill_day >= "#{start}" AND bill_day < "#{start.next_month}"
+      AND hostname = "#{hostname}"
+    SQL
+
+    return sql_query(query: query)
+  end
+
+  rmethod :sites_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
+    month_str = select_on['month']
+    if month_str.nil? || month_str == ''
+      month = Date.today
+    else
+      Date.parse(month)
+    end
+
+    start = Date.new(month.year, month.month, 1)
+
+    query = <<~SQL
+      SELECT  hostname, sum(used_bytes)/1073741824 AS used_gbytes, sum(charged_bytes)/1073741824 AS charged_gbytes
+      FROM daily_usage
+      WHERE bill_day >= "#{start}" AND bill_day < "#{start.next_month}"
+      GROUP BY hostname
+      ORDER BY hostname
+    SQL
+
+    return sql_query(query: query)
+  end
+
   rmethod :update do |select_on: nil, set: nil, result: nil, **args|  # rubocop:disable Lint/UnusedBlockArgument"
     # We don't actually do this.
   end
 
   rmethod :delete do |select_on: nil, set: nil, result: nil, **args|  # rubocop:disable Lint/UnusedBlockArgument"
     # We don't actually do this.
+  end
+
+  private def site_name(address, mask)
+    query = <<~SQL
+      SELECT customer.site_name
+      FROM customer,dns_network,dns_subnet,customer_dns_subnet
+      WHERE customer.customer_id = customer_dns_subnet.customer_id
+      AND customer_dns_subnet.dns_subnet_id = dns_subnet.dns_subnet_id
+      AND dns_subnet.dns_network_id = dns_network.dns_network_id
+      AND (dns_network.network+subnet * subnet_size) = (INET_ATON('#{address}') & INET_ATON('#{mask}'))
+    SQL
+    WIKK::SQL.connect(@db_config) do |sql|
+      result = sql.query_hash(query)
+      return result.length > 0 ? result.first['site_name'] : ''
+    end
   end
 end
