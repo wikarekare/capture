@@ -20,8 +20,12 @@ class GnuGraph < RPC
   end
 
   rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
-    if !@authenticated && @local_site != '' && select_on['hosts'].length == 1 && select_on['hosts'][0] == @local_site
-      @result_acl += [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
+    if !@authenticated
+      raise 'Not Local' if @local_site == ''
+
+      if select_on['hosts'].length == 1 && select_on['hosts'][0] == @local_site
+        @result_acl += [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
+      end
     end
 
     select_on.each { |k, _v| acceptable(field: k, acceptable_list: @select_acl) } if select_on != nil
