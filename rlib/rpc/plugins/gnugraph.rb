@@ -26,7 +26,7 @@ class GnuGraph < RPC
       if select_on['hosts'].length == 1 && select_on['hosts'][0] == @local_site
         @result_acl += [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
       end
-    elsif @local_site == '' && hosts.length == 1 && hosts[0] == ''
+    elsif @local_site == '' && select_on['hosts'].length == 1 && select_on['hosts'][0] == ''
       # Then this is an external, authenticated site, which should only be asking for specific hosts
       raise 'Not Local' if @local_site == ''
     end
