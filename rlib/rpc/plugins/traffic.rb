@@ -9,8 +9,8 @@
 
 # Traffic related methods
 class Traffic < RPC
-  def initialize(authenticated = false)
-    super(authenticated)
+  def initialize(cgi, authenticated = false)
+    super(cgi, authenticated)
     if authenticated
       @select_acl = [ 'hostname', 'log_timestamp' ]
       @set_acl = []
@@ -97,7 +97,7 @@ class Traffic < RPC
   rmethod :site_daily_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
     hostname = select_on['hostname']
     if hostname.nil? || hostname == ''
-      requestor = ENV.fetch('REMOTE_ADDR')
+      requestor = @cgi.env['REMOTE_ADDR']
       hostname = site_name(requestor, '255.255.255.224')
       if hostname.nil? || hostname == ''
         raise 'Not a local site' # Don't know who this is
@@ -127,7 +127,7 @@ class Traffic < RPC
   rmethod :site_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
     hostname = select_on['hostname']
     if hostname.nil? || hostname == ''
-      requestor = ENV.fetch('REMOTE_ADDR')
+      requestor = @cgi.env['REMOTE_ADDR']
       hostname = site_name(requestor, '255.255.255.224')
       if hostname.nil? || hostname == ''
         raise 'Not a local site' # Don't know who this is
