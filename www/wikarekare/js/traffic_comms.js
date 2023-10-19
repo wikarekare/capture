@@ -31,7 +31,8 @@ var wikk_traffic = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": ['hostname','log_timestamp']
       },
-      "version": 1.1
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"
@@ -74,7 +75,8 @@ var wikk_traffic = ( function() {
         "set": null,
         "result": []
       },
-      "version": 1.1
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"

@@ -32,7 +32,8 @@ var wikk_traffic_usage = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": []
       },
-      "version": 1.1
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"
@@ -73,7 +74,8 @@ var wikk_traffic_usage = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": []
       },
-      "version": 1.1
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"
@@ -120,7 +122,8 @@ var wikk_traffic_usage = ( function() {
         "set": null,
         "result": []
       },
-      "version": 1.1
+      "id": Date.getTime(),
+      "jsonrpc": 2.0
     }
 
     url = "/ruby/rpc.rbx"
