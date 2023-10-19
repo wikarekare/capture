@@ -26,7 +26,7 @@ var wikk_traffic_usage = ( function() {
 
     var args = {
       "method": "Traffic.sites_usage_summary",
-      "kwparams": {
+      "params": {
         "select_on": { "month": month },  //every active line
         "orderby": null,
         "set": null,              //blank, then no fields to update in a GET
@@ -68,7 +68,7 @@ var wikk_traffic_usage = ( function() {
 
     var args = {
       "method": "Traffic.site_usage_summary",
-      "kwparams": {
+      "params": {
         "select_on": { "hostname": hostname, "month": month },  //every active line
         "orderby": null,
         "set": null,              //blank, then no fields to update in a GET
@@ -113,7 +113,7 @@ var wikk_traffic_usage = ( function() {
     var the_form = document.getElementById(form_id);
     var args = {
       "method": "Traffic.site_daily_usage_summary",
-      "kwparams": {
+      "params": {
         "select_on": {
           "hostname": hostname,
           "month": month

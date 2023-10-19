@@ -25,7 +25,7 @@ var wikk_traffic = ( function() {
 
     var args = {
       "method": "Traffic.last_traffic",
-      "kwparams": {
+      "params": {
         "select_on": { "hostname": site_name },  //every active line
         "orderby": null,
         "set": null,              //blank, then no fields to update in a GET
@@ -65,7 +65,7 @@ var wikk_traffic = ( function() {
     var the_form = document.getElementById(form_id);
     var args = {
       "method": "Traffic.read",
-      "kwparams": {
+      "params": {
         "select_on": {
           "hostname": the_form.host.value,
           "start_time": the_form.start_datetime.value,
