@@ -36,7 +36,7 @@ var wikk_traffic_usage = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, sites_usage_summary_callback, sites_usage_summary_error, sites_usage_summary_completion, 'json', true, delay);
     return false;
   }
@@ -78,7 +78,7 @@ var wikk_traffic_usage = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, site_usage_summary_callback, site_usage_summary_error, site_usage_summary_completion, 'json', true, delay);
     return false;
   }
@@ -126,7 +126,7 @@ var wikk_traffic_usage = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, site_daily_usage_callback, site_daily_usage_error_callback, site_daily_usage_completion, 'json', true, 0);
 
     return false;

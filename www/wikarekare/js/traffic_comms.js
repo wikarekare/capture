@@ -35,7 +35,7 @@ var wikk_traffic = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, last_traffic_callback, last_traffic_error, last_traffic_completion, 'json', true, delay);
     return false;
   }
@@ -79,7 +79,7 @@ var wikk_traffic = ( function() {
       "jsonrpc": 2.0
     }
 
-    url = "/ruby/rpc.rbx"
+    url = RPC
     wikk_ajax.delayed_ajax_post_call(url, args, traffic_data_callback, traffic_data_error_callback, traffic_data_completion, 'json', true, 0);
 
     return false;
