@@ -32,11 +32,11 @@ var wikk_traffic_usage = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": []
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, sites_usage_summary_callback, sites_usage_summary_error, sites_usage_summary_completion, 'json', true, delay);
     return false;
   }
@@ -74,11 +74,11 @@ var wikk_traffic_usage = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": []
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, site_usage_summary_callback, site_usage_summary_error, site_usage_summary_completion, 'json', true, delay);
     return false;
   }
@@ -122,11 +122,11 @@ var wikk_traffic_usage = ( function() {
         "set": null,
         "result": []
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, site_daily_usage_callback, site_daily_usage_error_callback, site_daily_usage_completion, 'json', true, 0);
 
     return false;

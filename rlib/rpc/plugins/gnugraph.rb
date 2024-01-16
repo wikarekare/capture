@@ -4,8 +4,8 @@ require "#{RLIB}/monitor/gen_images.rb"
 # Generates graphs on the web site, and returns URIs to them.
 class GnuGraph < RPC
   # Expect "hosts": ["host1",...]
-  def initialize(cgi, authenticated = false)
-    super(cgi, authenticated)
+  def initialize(cgi:, authenticated: false)
+    super(cgi: cgi, authenticated: authenticated)
     @select_acl = [ 'hosts', 'start_time', 'end_time', 'last_seen' ]
     @result_acl = [ 'traffic_split', 'ping', 'graph3d', 'traffic_dual' ]
     @set_acl = []

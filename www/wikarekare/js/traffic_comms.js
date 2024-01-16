@@ -31,11 +31,11 @@ var wikk_traffic = ( function() {
         "set": null,              //blank, then no fields to update in a GET
         "result": ['hostname','log_timestamp']
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, last_traffic_callback, last_traffic_error, last_traffic_completion, 'json', true, delay);
     return false;
   }
@@ -75,11 +75,11 @@ var wikk_traffic = ( function() {
         "set": null,
         "result": []
       },
-      "id": Date.getTime(),
+      "id": new Date().getTime(),
       "jsonrpc": 2.0
     }
 
-    url = RPC
+    url = RPC_URL
     wikk_ajax.delayed_ajax_post_call(url, args, traffic_data_callback, traffic_data_error_callback, traffic_data_completion, 'json', true, 0);
 
     return false;

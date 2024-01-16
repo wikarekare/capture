@@ -9,8 +9,8 @@
 
 # Traffic related methods
 class Traffic < RPC
-  def initialize(cgi, authenticated = false)
-    super(cgi, authenticated)
+  def initialize(cgi:, authenticated: false)
+    super(cgi: cgi, authenticated: authenticated)
     if authenticated
       @select_acl = [ 'hostname', 'log_timestamp' ]
       @set_acl = []
