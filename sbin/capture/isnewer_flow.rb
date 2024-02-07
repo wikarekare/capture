@@ -1,7 +1,9 @@
 #!/usr/local/bin/ruby
 require 'getoptlong'
-RLIB = '/wikk/rlib' unless defined? RLIB
-require_relative "#{RLIB}/wikk_conf.rb"
+
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 
 VERSION = 1.2
 

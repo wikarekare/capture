@@ -1,4 +1,4 @@
-RLIB = '/wikk/rlib' unless defined? RLIB
+
 require_relative "#{RLIB}/account/graph_sql_traffic.rb"
 require_relative 'ping_log.rb'
 require_relative 'signal_log_new.rb'

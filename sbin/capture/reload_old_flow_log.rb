@@ -1,7 +1,8 @@
 #!/usr/local/bin/ruby
-RLIB = '/wikk/rlib' unless defined? RLIB
 
-require "#{RLIB}/wikk_conf.rb"
+unless defined? WIKK_CONF
+  load '/wikk/etc/wikk.conf'
+end
 
 DAYS_IN_MONTH = [ nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 
