@@ -61,7 +61,7 @@ class Traffic < RPC
       AND log_timestamp >= '#{last_time.strftime('%Y-%m-%d %H:%M:%S')}'
       AND log_timestamp <= '#{end_time.strftime('%Y-%m-%d %H:%M:%S')}'
       GROUP BY event_time
-      ORDER BY event_time;
+      ORDER BY event_time
     SQL
 
     rows = []
