@@ -1,8 +1,6 @@
 #!/usr/local/bin/ruby
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 DAYS_IN_MONTH = [ nil, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ]
 

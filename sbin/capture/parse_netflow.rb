@@ -4,9 +4,7 @@ require 'time'
 require 'pp'
 require 'ipaddr'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 VERSION = 1.2
 CYCLE_FILE_HOURS = 1

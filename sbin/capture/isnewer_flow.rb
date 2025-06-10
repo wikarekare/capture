@@ -1,9 +1,7 @@
 #!/usr/local/bin/ruby
 require 'getoptlong'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 VERSION = 1.2
 

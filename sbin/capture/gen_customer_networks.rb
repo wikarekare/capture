@@ -6,9 +6,7 @@
 require 'wikk_sql'
 require 'wikk_configuration'
 
-unless defined? WIKK_CONF
-  load '/wikk/etc/wikk.conf'
-end
+load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 # Write IP address, site_name pairs to YML file
 def dump_customer_networks
