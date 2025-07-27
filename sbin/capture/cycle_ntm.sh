@@ -8,4 +8,4 @@
 #fi
 
 #Remove anything older than 14 days, as it should have been processed well before then
-/usr/bin/find ${NTM_LOG_DIR} -mtime +31d -name wikk\* -maxdepth 1 -exec /bin/rm -f {} \;
+/usr/bin/find ${NTM_LOG_DIR} -mtime +31 -name wikk\* -maxdepth 1 -exec /bin/rm -f {} \;
