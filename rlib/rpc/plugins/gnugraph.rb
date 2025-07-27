@@ -5,12 +5,16 @@ require "#{RLIB}/monitor/gen_images.rb"
 class GnuGraph < RPC
   # Expect "hosts": ["host1",...]
   def initialize(cgi:, authenticated: false)
-    super(cgi: cgi, authenticated: authenticated)
+    super
     @select_acl = [ 'hosts', 'start_time', 'end_time', 'last_seen' ]
     @result_acl = [ 'traffic_split', 'ping', 'graph3d', 'traffic_dual' ]
     @set_acl = []
     @requestor = cgi.env['REMOTE_ADDR']
-    @local_site = site_name(@requestor, '255.255.255.224')
+    @local_site = if @requestor =~ /^100\.64\.0\..+$/
+                    'admin'
+                  else
+                    site_name(@requestor, '255.255.255.224')
+                  end
     if authenticated
       @result_acl += [ 'usage', 'hosts', 'host_histogram', 'ports', 'port_histogram', 'signal',
                        'internal_hosts', 'dist', 'graphP2', 'graphC2', 'pdist'
@@ -20,14 +24,14 @@ class GnuGraph < RPC
 
   rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
     if !@authenticated
-      raise 'Not Local' if @local_site == ''
+      raise "#{@requestor} Not Local" if @local_site == ''
 
       if select_on['hosts'].length == 1 && select_on['hosts'][0] == @local_site
         @result_acl += [ 'usage', 'host_histogram', 'port_histogram', 'internal_hosts' ]
       end
     elsif @local_site == '' && select_on['hosts'].length == 1 && select_on['hosts'][0] == ''
       # Then this is an external, authenticated site, which should only be asking for specific hosts
-      raise 'Not Local' if @local_site == ''
+      raise "#{@requestor} Not Local" if @local_site == ''
     end
 
     select_on.each { |k, _v| acceptable(field: k, acceptable_list: @select_acl) } if select_on != nil
@@ -57,7 +61,7 @@ class GnuGraph < RPC
                                  start_time: start_time, end_time:  end_time
     )
 
-    message.collect! { |s| s.gsub(/\n/, ' ') }
+    message.collect! { |s| s.gsub("\n", ' ') }
     time_diff = end_time - start_time
     days = (time_diff / 86400).to_i
     hours = ((time_diff - days * 86400) / 3600.0).round(2)
