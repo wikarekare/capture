@@ -22,7 +22,7 @@ class GnuGraph < RPC
     end
   end
 
-  rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument"
+  rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     if !@authenticated
       raise "#{@requestor} Not Local" if @local_site == ''
 
@@ -34,8 +34,8 @@ class GnuGraph < RPC
       raise "#{@requestor} Not Local" if @local_site == ''
     end
 
-    select_on.each { |k, _v| acceptable(field: k, acceptable_list: @select_acl) } if select_on != nil
-    result.each { |k, _v| acceptable(field: k, acceptable_list: @result_acl) } if result != nil
+    select_on.each_key { |k| acceptable(field: k, acceptable_list: @select_acl) } if select_on != nil
+    result.each_key { |k| acceptable(field: k, acceptable_list: @result_acl) } if result != nil
 
     raise 'Hostname(s) required' if select_on['hosts'].nil? || select_on['hosts'].length == 0
 
