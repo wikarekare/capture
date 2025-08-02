@@ -5,7 +5,7 @@ load '/wikk/etc/wikk.conf' unless defined? WIKK_CONF
 
 VERSION = 1.2
 
-@opts = [ # rubocop: disable Layout/SpaceInsideArrayLiteralBrackets # No idea why I get this
+@opts = [ # rubocop: disable Layout/SpaceInsideArrayLiteralBrackets
   [ '--version', '-V', GetoptLong::NO_ARGUMENT ],
   [ '--ntm_dir', '-n', GetoptLong::REQUIRED_ARGUMENT ]
 ]

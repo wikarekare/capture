@@ -341,7 +341,7 @@ end
 # @logfile_date = Time.parse("2014-01-03 20:00:00")
 # @last_valid_date = @logfile_date - 300 #5 minutes before the last entry in the file.
 
-@opts = [ # rubocop: disable Layout/SpaceInsideArrayLiteralBrackets # No idea why I get this
+@opts = [ # rubocop: disable Layout/SpaceInsideArrayLiteralBrackets
   [ '--version', '-V', GetoptLong::NO_ARGUMENT ],
   [ '--ntm_dir', '-n', GetoptLong::REQUIRED_ARGUMENT ]
 ]

@@ -25,7 +25,7 @@ end
 @records = {}
 
 def line_ctl_from_yaml
-  File.open(CUSTOMER_NETWORKS, 'r') { |fd| @networks = YAML.load(fd) } # rubocop:disable Security/YAMLLoad # Not an issue with our own YAML file.
+  File.open(CUSTOMER_NETWORKS, 'r') { |fd| @networks = YAML.load(fd) } # rubocop:disable Security/YAMLLoad
 end
 
 def insert_record(r)
