@@ -1,16 +1,16 @@
-#+---------------+------------+------+-----+---------+-------+
+# +---------------+------------+------+-----+---------+-------+
 # | Field         | Type       | Null | Key | Default | Extra |
-#+---------------+------------+------+-----+---------+-------+
+# +---------------+------------+------+-----+---------+-------+
 # | bytes_in      | bigint(20) | YES  |     | NULL    |       |
 # | bytes_out     | bigint(20) | YES  |     | NULL    |       |
 # | hostname      | char(32)   | NO   | PRI |         |       |
 # | log_timestamp | datetime   | NO   | PRI | NULL    |       |
-#+---------------+------------+------+-----+---------+-------+
+# +---------------+------------+------+-----+---------+-------+
 
 # Traffic related methods
 class Traffic < RPC
   def initialize(cgi:, authenticated: false)
-    super(cgi: cgi, authenticated: authenticated)
+    super
     if authenticated
       @select_acl = [ 'hostname', 'log_timestamp' ]
       @set_acl = []
