@@ -38,9 +38,8 @@ def add_monthly_log_summary_partions(year:)
 
   # Then we need to insert new monthly partitions
   # And add back the catchall at the end.
-  partitions = []
-  (1..11).each do |m|
-    partitions << "PARTITION `p#{year}_#{'%02d' % m}` VALUES LESS THAN ('#{year}-#{'%02d' % (m + 1)}-01')"
+  partitions = Array.new(11) do |m|
+    "PARTITION `p#{year}_#{'%02d' % (m + 1)}` VALUES LESS THAN ('#{year}-#{'%02d' % (m + 2)}-01')"
   end
   query2 = <<~SQL
     ALTER TABLE log_summary ADD PARTITION (
@@ -81,7 +80,7 @@ end
 t = Time.now
 if t.month != 12
   warn 'Only run in December, and only once'
-  #exit 1
+  # exit 1
 end
 
 init
@@ -89,7 +88,7 @@ init
 # Double check we haven't already run this for next year
 # Repeated calls, will cause the Transaction to fail, and need to unwind.
 unless partition_present?(year: t.year + 1, month: 1)
-  #add_monthly_log_summary_partions(year: t.year + 1)
+  # add_monthly_log_summary_partions(year: t.year + 1)
 end
 
 # Check we haven't already deleted the old partitions.

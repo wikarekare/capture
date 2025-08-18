@@ -1,4 +1,3 @@
-
 require_relative "#{RLIB}/account/graph_sql_traffic.rb"
 require_relative 'ping_log.rb'
 require_relative 'signal_log_new.rb'
@@ -10,7 +9,7 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
 
   hosts.each do |h|
     h = 'all' if h == '' || h.nil? # Unspecified hostname == 'all'
-    h = h.gsub(/external/, 'link') if h =~ /^external/
+    h = h.gsub('external', 'link') if h =~ /^external/
     graph_types.each do |gt|
       begin
         case gt
@@ -70,7 +69,7 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
                       Graph_2D.new(mysql_conf, h, false, Time.at(start_time), Time.at(end_time) ).images
                     end
         when 'ping'; # Smoke Ping like graph, over period.
-          h = h.gsub(/link/, 'external') if h =~ /^link/ # Make up your mind!
+          h = h.gsub('link', 'external') if h =~ /^link/ # Make up your mind!
           ping_record = Ping_Log.new(mysql_conf)
           if (error = ping_record.gnuplot(h, Time.at(start_time), Time.at(end_time)) ).nil?
             images << "<p><img src=\"/netstat/#{h}-p5f.png?start_time=#{Time.at(start_time).xmlschema}&end_time=#{Time.at(end_time).xmlschema}\"></p>\n"
@@ -117,13 +116,13 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
                       Graph_2D.new(mysql_conf, h, false, Time.at(start_time), Time.at(end_time) ).images
                     end
         end
-      rescue Exception => e # rubocop:disable Lint/RescueException Called by CGI, so we want it to report back
+      rescue Exception => e # rubocop:disable Lint/RescueException
         backtrace = e.backtrace[0].split(':')
-        message << "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub(/'/, '\\\'')}"
+        message << "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}"
       end
     end
   end
-  message.collect! { |m| m.gsub(/\n/, '').gsub(/"/, '\"').gsub(/</, '&lt;').gsub(/>/, '&gt;') }
-  images.collect! { |im| im.gsub(/\n/, '').gsub(/"/, '\"') }
+  message.collect! { |m| m.gsub("\n", '').gsub('"', '\"').gsub('<', '&lt;').gsub('>', '&gt;') }
+  images.collect! { |im| im.gsub("\n", '').gsub('"', '\"') }
   return images, message
 end

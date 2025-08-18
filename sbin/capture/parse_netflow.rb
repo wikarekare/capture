@@ -90,9 +90,9 @@ def insert_flow_record(basetime, octets, flow)
   # 0      1   2    3            4    5   6            7   8   9 10   11   12      13  14
   # Start End Sif	SrcIPaddress SrcP DIf DstIPaddress DstP P  Fl tos	Pkts Octets saa daa
   if direction(flow[3]) == 1 # incoming, then reverse src and dest and use d_frompdus and d_fromoctets
-    insert_record(basetime, dest_ip_addr, flow[7], src_ip_addr, flow[4], flow[8], [ 0, 1, 0, octets, flow[9], flow[14], flow[13]]) # [d_topdus	d_frompdus	d_tooctets	d_fromoctets, flow_number, source_mac, dest_mac]
+    insert_record(basetime, dest_ip_addr, flow[7], src_ip_addr, flow[4], flow[8], [ 0, 1, 0, octets, flow[9], flow[14], flow[13] ]) # [d_topdus	d_frompdus	d_tooctets	d_fromoctets, flow_number, source_mac, dest_mac]
   else # outgoing then use d_topdus and d_tooctets
-    insert_record(basetime, src_ip_addr, flow[4], dest_ip_addr, flow[7], flow[8], [ 1, 0, octets, 0, flow[9], flow[13], flow[14]]) # [d_topdus	d_frompdus	d_tooctets	d_fromoctets, flow_number, source_mac, dest_mac]
+    insert_record(basetime, src_ip_addr, flow[4], dest_ip_addr, flow[7], flow[8], [ 1, 0, octets, 0, flow[9], flow[13], flow[14] ]) # [d_topdus	d_frompdus	d_tooctets	d_fromoctets, flow_number, source_mac, dest_mac]
   end
 
   #   if(direction(flow[3]) == 1) #incoming, then reverse src and dest and use d_frompdus and d_fromoctets
@@ -128,7 +128,7 @@ def ip_address_to_subnet(ipaddr)
   # special case for tracking admin2 and admin1
   return DB_ADMIN_ORIG if ipaddr == DB_ADMIN_ORIG || ipaddr == DB_ADMIN # db/www on admin2
   return DSL_NET_ORIG if  ipaddr == GATE_DSL_ORIG  # gates DSL interface.
-  return DSL_NET if  ipaddr == GATE_DSL  # gates DSL interface.
+  return DSL_NET if ipaddr == GATE_DSL  # gates DSL interface.
 
   ip_dot = ipaddr.split('.')
   if ip_dot[0] == '10' # Local home subnets have /27 mask, and we only want to record to the local subnet level.

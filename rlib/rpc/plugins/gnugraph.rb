@@ -39,7 +39,7 @@ class GnuGraph < RPC
 
     raise 'Hostname(s) required' if select_on['hosts'].nil? || select_on['hosts'].length == 0
 
-    hosts = select_on['hosts'].instance_of?(Array) ? select_on['hosts'] : [ select_on['hosts']]
+    hosts = select_on['hosts'].instance_of?(Array) ? select_on['hosts'] : [ select_on['hosts'] ]
 
     start_time = if select_on['start_time'].nil? || select_on['start_time'].length == 0
                    Time.now.to_i - 3600 # Default to 1 hour

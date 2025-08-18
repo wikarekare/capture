@@ -37,10 +37,10 @@ def insert_record(r)
             ( dest_ip[0] == '169' && dest_ip[1] == '254' )   || # Destination is Failed DHCP address
             ( dest_ip[0] == '192' && dest_ip[1] == '168' )   || # Destination is local link
             ( dest_ip[0] == '100' && dest_ip[1] == '64' ) || # Destination is local link
-            ( dest_ip[0] == '172' && dest_ip[1].to_i >= 16 && dest_ip[1].to_i < 32 ) || # Destination is 172.16.0.0/12
+            ( dest_ip[0] == '172' && dest_ip[1].to_i.between(16, 31) ) || # Destination is 172.16.0.0/12
             ( r[7] == '255.255.255.255' ) || # Broadcast
-            ( dest_ip[0].to_i >= 224 && dest_ip[0].to_i <= 239 ) || # Destination is multicast
-            ( src_ip[0].to_i >= 224 && src_ip[0].to_i <= 239 ) || # Source is multicast
+            dest_ip[0].to_i.between(224, 239) || # Destination is multicast
+            src_ip[0].to_i.between(224, 239) || # Source is multicast
             ( src_ip[0] == '169' && src_ip[1] == '254' ) || # Source is Failed DHCP Address
             ( src_ip[0] == '192' && src_ip[1] == '168' && src_ip[2] != '249' ) # || #Source is local link address
 
