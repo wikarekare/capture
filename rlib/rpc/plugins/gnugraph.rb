@@ -22,7 +22,7 @@ class GnuGraph < RPC
     end
   end
 
-  rmethod :graph do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :graph do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     if !@authenticated
       raise "#{@requestor} Not Local" if @local_site == ''
 

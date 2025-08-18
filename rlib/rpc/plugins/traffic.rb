@@ -22,7 +22,7 @@ class Traffic < RPC
     end
   end
 
-  rmethod :create do |select_on: nil, set: nil, result: nil, **args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :create do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     # new record
   end
 
@@ -94,7 +94,7 @@ class Traffic < RPC
     return { 'rows' => rows, 'affected_rows' => sql.affected_rows, 'hostname' => select_on['hostname'] }
   end
 
-  rmethod :site_daily_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :site_daily_usage_summary do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     hostname = select_on['hostname']
     if hostname.nil? || hostname == ''
       requestor = @cgi.env['REMOTE_ADDR']
@@ -124,7 +124,7 @@ class Traffic < RPC
     return sql_query(query: query)
   end
 
-  rmethod :site_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :site_usage_summary do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     hostname = select_on['hostname']
     if hostname.nil? || hostname == ''
       requestor = @cgi.env['REMOTE_ADDR']
@@ -153,7 +153,7 @@ class Traffic < RPC
     return sql_query(query: query)
   end
 
-  rmethod :sites_usage_summary do |select_on: nil, set: nil, result: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :sites_usage_summary do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     month_str = select_on['month']
     if month_str.nil? || month_str == ''
       month = Date.today
@@ -174,11 +174,11 @@ class Traffic < RPC
     return sql_query(query: query)
   end
 
-  rmethod :update do |select_on: nil, set: nil, result: nil, **args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :update do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     # We don't actually do this.
   end
 
-  rmethod :delete do |select_on: nil, set: nil, result: nil, **args|  # rubocop:disable Lint/UnusedBlockArgument
+  rmethod :delete do |select_on: nil, set: nil, result: nil, order_by: nil, **_args|  # rubocop:disable Lint/UnusedBlockArgument
     # We don't actually do this.
   end
 
