@@ -116,7 +116,7 @@ def gen_images(mysql_conf:, hosts:, graph_types:, start_time:, end_time:)
                       Graph_2D.new(mysql_conf, h, false, Time.at(start_time), Time.at(end_time) ).images
                     end
         end
-      rescue Exception => e # rubocop:disable Lint/RescueException
+      rescue Exception => e # rubocop:disable Lint/RescueException -- We don't want cgi's crashing without producing output
         backtrace = e.backtrace[0].split(':')
         message << "MSG: (#{File.basename(backtrace[-3])} #{backtrace[-2]}): #{e.message.to_s.gsub('\'', '\\\'')}"
       end
