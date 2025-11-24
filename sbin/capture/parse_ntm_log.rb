@@ -97,9 +97,9 @@ def insert_link_record(r)
     r[7] = DSL4
   elsif r[15] == DSL5_MAC || r[16] == DSL5_MAC  # ADSL5 VDSL1
     r[7] = DSL5
-  elsif r[15] == DSL6_MAC || r[16] == DSL6_MAC  # ADSL6 VDSL2
+  elsif r[15] == DSL6_MAC || r[16] == DSL6_MAC  # ADSL6 Fibre1
     r[7] = DSL6
-  elsif r[15] == DSL7_MAC || r[16] == DSL7_MAC  # ADSL7 VDSL3
+  elsif r[15] == DSL7_MAC || r[16] == DSL7_MAC  # ADSL7 Fibre2
     r[7] = DSL7
   else
     return

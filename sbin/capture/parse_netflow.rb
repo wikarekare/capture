@@ -148,9 +148,9 @@ def mac_address(last_bytes)
   when '1270' then 'E0:46:9A:0B:12:70' # ADSL2
   when '0B2C' then 'E0:46:9A:0B:0B:2C' # ADSL3
   when '97A4' then 'C4:3D:C7:BD:97:A4' # ADSL4
-  when DSL5_SHORT_MAC then DSL5_MAC # ADLS5 VDSL1
-  when DSL6_SHORT_MAC then DSL6_MAC # ADLS6 VDSL2
-  when DSL7_SHORT_MAC then DSL7_MAC # ADLS7 VDSL3
+  when DSL5_SHORT_MAC then DSL5_MAC # VDSL1
+  when DSL6_SHORT_MAC then DSL6_MAC # FIBRE1
+  when DSL7_SHORT_MAC then DSL7_MAC # FIBRE2
   when GATE_SHORT_MAC then GATE_MAC # Admin1 ADSL net interface
   else; "00:00:00:00: #{last_bytes[0, 2]}:#{last_bytes[2, 2]}"
   end

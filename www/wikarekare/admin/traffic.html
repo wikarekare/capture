@@ -93,7 +93,6 @@ function tower_graph(site_name) {
     case "None": window.site_name = ''; result_div.innerHTML = ''; break; //None
     case "dist": window.site_name = 'dist'; get_ping_data(false); break;
     case "all": window.site_name = 'all'; get_ping_data(false); break;
-    case "link5": window.site_name = 'link5'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
     case "link6": window.site_name = 'link6'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
     case "link7": window.site_name = 'link7'; graph_type = graph_type_map['dist']; get_ping_data(false); break;
     default: window.site_name = site_name; get_ping_data(false); break;
@@ -140,7 +139,6 @@ function init() {
                   <option value="None">none</option>
                   <option value="dist">By Tower</option>
                   <option value="all">All sites</option>
-                  <option value='link5'>Link 5</option>
                   <option value='link6'>Link 6</option>
                   <option value='link7'>Link 7</option>
             </select>&nbsp;
